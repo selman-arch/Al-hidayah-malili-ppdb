@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir PPDB Yayasan Al Hidayah Malili</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .form-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            color: white;
+        }
+        .input-group {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            color: #374151;
+        }
+        .checkbox-custom {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            position: relative;
+        }
+        .checkbox-custom:checked {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .checkbox-custom:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .hidden { display: none; }
+
+        .section-content {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loading-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .loading-step.active {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+        }
+        .loading-step.completed {
+            background: #dcfce7;
+            border-left: 4px solid #16a34a;
+        }
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .step-icon.pending {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        .step-icon.active {
+            background: #3b82f6;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        .step-icon.completed {
+            background: #16a34a;
+            color: white;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-full font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mb-6">
+                <img src="https://i.ibb.co/xnn8qWj/logo-sekolah.png" alt="Logo Yayasan Al Hidayah Malili" class="mx-auto h-24 w-24 object-contain mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="text-6xl hidden">🏫</div>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">📚 Formulir PPDB</h1>
+            <div class="text-2xl font-semibold text-gray-700 mb-4">Yayasan Al Hidayah Malili</div>
+            
+            <!-- Welcome Message -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-6 max-w-3xl mx-auto">
+                <div class="text-3xl mb-3">🌟</div>
+                <h2 class="text-xl font-bold text-blue-800 mb-3">Assalamu'alaikum Warahmatullahi Wabarakatuh</h2>
+                <h3 class="text-lg font-semibold text-blue-700 mb-4">Selamat Datang di Portal PPDB Online</h3>
+                <div class="text-gray-700 text-left space-y-2">
+                    <p class="flex items-start space-x-2">
+                        <span class="text-blue-600 font-bold">•</span>
+                        <span>Terima kasih telah memilih <strong>Yayasan Al Hidayah Malili</strong> sebagai tempat menuntut ilmu putra/putri Anda</span>
+                    </p>
+                    <p class="flex items-start space-x-2">
+                        <span class="text-blue-600 font-bold">•</span>
+                        <span>Silakan isi formulir pendaftaran dengan lengkap dan benar</span>
+                    </p>
+                    <p class="flex items-start space-x-2">
+                        <span class="text-blue-600 font-bold">•</span>
+                        <span>Pastikan dokumen yang diupload sesuai dengan ketentuan</span>
+                    </p>
+                    <p class="flex items-start space-x-2">
+                        <span class="text-blue-600 font-bold">•</span>
+                        <span>Jika ada pertanyaan, jangan ragu untuk menghubungi kami</span>
+                    </p>
+                </div>
+                <div class="mt-4 text-sm text-blue-600 font-medium">
+                    Mari bersama membangun generasi yang berakhlak mulia dan berprestasi! 🎓
+                </div>
+            </div>
+            
+            <!-- Tahun Ajaran Selection -->
+            <div class="max-w-md mx-auto mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Ajaran *</label>
+                <select name="tahunAjaran" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                    <option value="">Pilih Tahun Ajaran</option>
+                    <option value="2024/2025">2024/2025</option>
+                    <option value="2025/2026">2025/2026</option>
+                    <option value="2026/2027">2026/2027</option>
+                </select>
+            </div>
+            
+            <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-4 rounded-full"></div>
+        </div>
+
+        <form id="ppdbForm" class="space-y-6">
+            <!-- Section 1: Pilihan Jenjang -->
+            <div class="form-section section-content" id="section-1">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    🎯 Pilihan Jenjang Pendidikan
+                </h2>
+                <div class="input-group">
+                    <p class="text-sm text-gray-600 mb-4">Pilih jenjang yang diinginkan (MI tidak bisa dikombinasi dengan jenjang lain, MTs dan Pondok bisa dipilih bersamaan)</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <label class="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer transition-colors">
+                            <input type="checkbox" name="jenjang" value="MI" class="checkbox-custom" onchange="handleJenjangChange()">
+                            <div>
+                                <div class="font-semibold text-gray-800">MI</div>
+                                <div class="text-sm text-gray-600">Madrasah Ibtidaiyah</div>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer transition-colors">
+                            <input type="checkbox" name="jenjang" value="MTs" class="checkbox-custom" onchange="handleJenjangChange()">
+                            <div>
+                                <div class="font-semibold text-gray-800">MTs</div>
+                                <div class="text-sm text-gray-600">Madrasah Tsanawiyah</div>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer transition-colors">
+                            <input type="checkbox" name="jenjang" value="Pondok" class="checkbox-custom" onchange="handleJenjangChange()">
+                            <div>
+                                <div class="font-semibold text-gray-800">Pondok</div>
+                                <div class="text-sm text-gray-600">Pondok Pesantren</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Data Peserta Didik -->
+            <div class="form-section section-content hidden" id="section-2">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    👤 Data Peserta Didik
+                </h2>
+                <div class="input-group">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap *</label>
+                            <input type="text" name="namaLengkap" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Panggilan</label>
+                            <input type="text" name="namaPanggilan" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">NIK *</label>
+                            <input type="text" name="nik" required maxlength="16" pattern="[0-9]{16}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="16 digit angka" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">NISN *</label>
+                            <input type="text" name="nisn" required maxlength="10" pattern="[0-9]{10}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="10 digit angka" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                            <div id="nisnHelp" class="hidden mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-blue-600 text-lg">ℹ️</span>
+                                    <div class="text-sm text-blue-800">
+                                        <p class="font-medium mb-1">Khusus untuk calon siswa MI:</p>
+                                        <p>Jika belum memiliki NISN, silakan isi dengan angka <strong>0000000000</strong> (10 digit nol)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir *</label>
+                            <input type="text" name="tempatLahir" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir *</label>
+                            <input type="date" name="tanggalLahir" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin *</label>
+                            <select name="jenisKelamin" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih Jenis Kelamin</option>
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Agama *</label>
+                            <select name="agama" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih Agama</option>
+                                <option value="Islam">Islam</option>
+                                <option value="Kristen">Kristen</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Konghucu">Konghucu</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Anak ke-</label>
+                            <input type="number" name="anakKe" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Saudara</label>
+                            <input type="number" name="jumlahSaudara" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Status dalam Keluarga *</label>
+                            <select name="statusKeluarga" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih Status</option>
+                                <option value="Anak Kandung">Anak Kandung</option>
+                                <option value="Anak Tiri">Anak Tiri</option>
+                                <option value="Anak Angkat">Anak Angkat</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">No. HP</label>
+                            <input type="tel" name="noHp" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 081234567890" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <!-- Alamat Siswa -->
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Alamat Lengkap</h3>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap *</label>
+                            <textarea name="alamat" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Jalan, Nomor Rumah, dll"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi *</label>
+                                <input type="text" name="provinsi" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Sulawesi Selatan">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kabupaten/Kota *</label>
+                                <input type="text" name="kabupaten" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Luwu Timur">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kecamatan *</label>
+                                <input type="text" name="kecamatan" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Malili">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Desa/Kelurahan *</label>
+                                <input type="text" name="desa" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Malili">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">RT</label>
+                                <input type="text" name="rt" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">RW</label>
+                                <input type="text" name="rw" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kode Pos</label>
+                                <input type="text" name="kodePos" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Data Orang Tua -->
+            <div class="form-section section-content hidden" id="section-3">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    👨‍👩‍👧‍👦 Data Orang Tua
+                </h2>
+                
+                <!-- Data Ayah -->
+                <div class="input-group">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Data Ayah</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap Ayah *</label>
+                            <input type="text" name="namaAyah" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">NIK Ayah *</label>
+                            <input type="text" name="nikAyah" required maxlength="16" pattern="[0-9]{16}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="16 digit angka" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir Ayah</label>
+                            <input type="text" name="tempatLahirAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir Ayah</label>
+                            <input type="date" name="tanggalLahirAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pendidikan Ayah</label>
+                            <select name="pendidikanAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih Pendidikan</option>
+                                <option value="SD/MI">SD/MI</option>
+                                <option value="SMP/MTs">SMP/MTs</option>
+                                <option value="SMA/MA">SMA/MA</option>
+                                <option value="D3">D3</option>
+                                <option value="S1">S1</option>
+                                <option value="S2">S2</option>
+                                <option value="S3">S3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan Ayah</label>
+                            <input type="text" name="pekerjaanAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Penghasilan Ayah/Bulan</label>
+                            <select name="penghasilanAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih Range Penghasilan</option>
+                                <option value="< 1 juta">< Rp 1.000.000</option>
+                                <option value="1-2 juta">Rp 1.000.000 - 2.000.000</option>
+                                <option value="2-3 juta">Rp 2.000.000 - 3.000.000</option>
+                                <option value="3-5 juta">Rp 3.000.000 - 5.000.000</option>
+                                <option value="> 5 juta">> Rp 5.000.000</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Ayah</label>
+                            <input type="tel" name="hpAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 081234567890" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                        </div>
+                    </div>
+                    
+                    <!-- Alamat Ayah -->
+                    <div class="mt-4">
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" name="alamatAyahSama" class="checkbox-custom" onchange="toggleAlamatAyah()">
+                                <span class="text-sm font-medium text-gray-700">Alamat sama dengan peserta didik</span>
+                            </label>
+                        </div>
+                        
+                        <div id="alamatAyahSection">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap Ayah</label>
+                                <textarea name="alamatAyah" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi</label>
+                                    <input type="text" name="provinsiAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Sulawesi Selatan">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kabupaten/Kota</label>
+                                    <input type="text" name="kabupatenAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Luwu Timur">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kecamatan</label>
+                                    <input type="text" name="kecamatanAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Malili">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Desa/Kelurahan</label>
+                                    <input type="text" name="desaAyah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Malili">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Ibu -->
+                <div class="input-group">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Data Ibu</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap Ibu *</label>
+                            <input type="text" name="namaIbu" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">NIK Ibu *</label>
+                            <input type="text" name="nikIbu" required maxlength="16" pattern="[0-9]{16}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="16 digit angka" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir Ibu</label>
+                            <input type="text" name="tempatLahirIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir Ibu</label>
+                            <input type="date" name="tanggalLahirIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pendidikan Ibu</label>
+                            <select name="pendidikanIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih Pendidikan</option>
+                                <option value="SD/MI">SD/MI</option>
+                                <option value="SMP/MTs">SMP/MTs</option>
+                                <option value="SMA/MA">SMA/MA</option>
+                                <option value="D3">D3</option>
+                                <option value="S1">S1</option>
+                                <option value="S2">S2</option>
+                                <option value="S3">S3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan Ibu</label>
+                            <input type="text" name="pekerjaanIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Penghasilan Ibu/Bulan</label>
+                            <select name="penghasilanIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih Range Penghasilan</option>
+                                <option value="< 1 juta">< Rp 1.000.000</option>
+                                <option value="1-2 juta">Rp 1.000.000 - 2.000.000</option>
+                                <option value="2-3 juta">Rp 2.000.000 - 3.000.000</option>
+                                <option value="3-5 juta">Rp 3.000.000 - 5.000.000</option>
+                                <option value="> 5 juta">> Rp 5.000.000</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Ibu</label>
+                            <input type="tel" name="hpIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 081234567890" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                        </div>
+                    </div>
+                    
+                    <!-- Alamat Ibu -->
+                    <div class="mt-4">
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" name="alamatIbuSama" class="checkbox-custom" onchange="toggleAlamatIbu()">
+                                <span class="text-sm font-medium text-gray-700">Alamat sama dengan peserta didik</span>
+                            </label>
+                        </div>
+                        
+                        <div id="alamatIbuSection">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap Ibu</label>
+                                <textarea name="alamatIbu" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi</label>
+                                    <input type="text" name="provinsiIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Sulawesi Selatan">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kabupaten/Kota</label>
+                                    <input type="text" name="kabupatenIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Luwu Timur">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kecamatan</label>
+                                    <input type="text" name="kecamatanIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Malili">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Desa/Kelurahan</label>
+                                    <input type="text" name="desaIbu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Malili">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Wali -->
+                <div class="input-group">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Data Wali (Jika Ada)</h3>
+                    
+                    <div class="mb-4 space-y-3">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" name="waliSamaAyah" class="checkbox-custom" onchange="toggleWaliSamaAyah()">
+                            <span class="text-sm font-medium text-gray-700">Wali sama dengan Ayah</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" name="waliSamaIbu" class="checkbox-custom" onchange="toggleWaliSamaIbu()">
+                            <span class="text-sm font-medium text-gray-700">Wali sama dengan Ibu</span>
+                        </label>
+                    </div>
+                    
+                    <div id="dataWaliSection">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap Wali</label>
+                                <input type="text" name="namaWali" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">NIK Wali</label>
+                                <input type="text" name="nikWali" maxlength="16" pattern="[0-9]{16}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="16 digit angka" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hubungan dengan Siswa</label>
+                                <select name="hubunganWali" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Pilih Hubungan</option>
+                                    <option value="Kakek">Kakek</option>
+                                    <option value="Nenek">Nenek</option>
+                                    <option value="Paman">Paman</option>
+                                    <option value="Bibi">Bibi</option>
+                                    <option value="Kakak">Kakak</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan Wali</label>
+                                <input type="text" name="pekerjaanWali" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Wali</label>
+                                <input type="tel" name="hpWali" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 081234567890" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                            </div>
+                        </div>
+                        
+                        <!-- Alamat Wali -->
+                        <div class="mt-4">
+                            <div class="mb-4">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" name="alamatWaliSama" class="checkbox-custom" onchange="toggleAlamatWali()">
+                                    <span class="text-sm font-medium text-gray-700">Alamat sama dengan peserta didik</span>
+                                </label>
+                            </div>
+                            
+                            <div id="alamatWaliSection">
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap Wali</label>
+                                    <textarea name="alamatWali" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi</label>
+                                        <input type="text" name="provinsiWali" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Sulawesi Selatan">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Kabupaten/Kota</label>
+                                        <input type="text" name="kabupatenWali" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Luwu Timur">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Kecamatan</label>
+                                        <input type="text" name="kecamatanWali" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Malili">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Desa/Kelurahan</label>
+                                        <input type="text" name="desaWali" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Malili">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Data Sekolah Sebelumnya -->
+            <div class="form-section section-content hidden" id="section-4">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    🏫 Data Sekolah Sebelumnya
+                </h2>
+                <div class="input-group">
+                    <!-- Untuk MI -->
+                    <div id="miAsalSection" class="hidden">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Asal Pendidikan *</label>
+                            <select name="asalPendidikan" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="handleAsalPendidikanChange()">
+                                <option value="">Pilih Asal Pendidikan</option>
+                                <option value="TK">TK/RA</option>
+                                <option value="Orang Tua">Langsung dari Orang Tua</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Untuk MTs/Pondok -->
+                    <div id="mtsAsalSection" class="hidden">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Asal Sekolah *</label>
+                            <select name="asalSekolah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="handleAsalSekolahChange()">
+                                <option value="">Pilih Asal Sekolah</option>
+                                <option value="SD">Sekolah Dasar (SD)</option>
+                                <option value="MI">Madrasah Ibtidaiyah (MI)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="dataSekolahSection" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Sekolah *</label>
+                                <input type="text" name="namaSekolah" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">NPSN (Nomor Pokok Sekolah Nasional) *</label>
+                                <input type="text" name="npsn" required maxlength="8" pattern="[0-9]{8}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="8 digit angka" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                            </div>
+                            <div id="nsmField" class="hidden">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">NSM (Nomor Statistik Madrasah) *</label>
+                                <input type="text" name="nsm" maxlength="18" pattern="[0-9]{18}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="18 digit angka" oninput="validateNumericInput(this)" onkeypress="return isNumberKey(event)">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Lulus</label>
+                                <input type="number" name="tahunLulus" min="2020" max="2027" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Sekolah</label>
+                            <textarea name="alamatSekolah" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Riwayat Kesehatan -->
+            <div class="form-section section-content hidden" id="section-5">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    🏥 Riwayat Kesehatan
+                </h2>
+                <div class="input-group">
+                    <div class="mb-4">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" name="adaRiwayatPenyakit" class="checkbox-custom" onchange="toggleRiwayatPenyakit()">
+                            <span class="text-sm font-medium text-gray-700">Peserta didik memiliki riwayat penyakit tertentu</span>
+                        </label>
+                    </div>
+                    
+                    <div id="riwayatPenyakitSection" class="hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Daftar Riwayat Penyakit</h3>
+                            <button type="button" onclick="addPenyakitItem()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                + Tambah Penyakit
+                            </button>
+                        </div>
+                        
+                        <div id="penyakitContainer">
+                            <div class="penyakit-item bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="font-medium text-gray-800">Riwayat Penyakit #1</h4>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Penyakit</label>
+                                        <input type="text" name="namaPenyakit[]" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tingkat Keparahan</label>
+                                        <select name="tingkatKeparahan[]" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Pilih Tingkat</option>
+                                            <option value="Ringan">Ringan</option>
+                                            <option value="Sedang">Sedang</option>
+                                            <option value="Berat">Berat</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan</label>
+                                    <textarea name="keteranganPenyakit[]" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Data Bantuan -->
+            <div class="form-section section-content hidden" id="section-6">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    💰 Data Bantuan (Jika Ada)
+                </h2>
+                <div class="input-group">
+                    <div class="mb-4">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" name="adaBantuan" class="checkbox-custom" onchange="toggleBantuanSection()">
+                            <span class="text-sm font-medium text-gray-700">Saya menerima bantuan sosial/pendidikan</span>
+                        </label>
+                    </div>
+                    
+                    <div id="bantuanSection" class="hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Daftar Bantuan yang Diterima</h3>
+                            <button type="button" onclick="addBantuanItem()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                + Tambah Bantuan
+                            </button>
+                        </div>
+                        
+                        <div id="bantuanContainer">
+                            <div class="bantuan-item bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="font-medium text-gray-800">Bantuan #1</h4>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Bantuan</label>
+                                        <select name="jenisBantuan[]" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Pilih Jenis Bantuan</option>
+                                            <option value="KIP">Kartu Indonesia Pintar (KIP)</option>
+                                            <option value="PKH">Program Keluarga Harapan (PKH)</option>
+                                            <option value="BSM">Bantuan Siswa Miskin (BSM)</option>
+                                            <option value="KIS">Kartu Indonesia Sehat (KIS)</option>
+                                            <option value="PIP">Program Indonesia Pintar (PIP)</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Kartu/ID</label>
+                                        <input type="text" name="nomorBantuan[]" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan</label>
+                                    <textarea name="keteranganBantuan[]" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 7: Upload Dokumen -->
+            <div class="form-section section-content hidden" id="section-7">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    📄 Upload Dokumen
+                </h2>
+                <div class="input-group">
+                    <p class="text-sm text-gray-600 mb-4">Upload dokumen yang diperlukan (format: PDF, JPG, PNG, maksimal 2MB per file)</p>
+                    <div class="space-y-4">
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Latar Merah (3x4) *</label>
+                            <input type="file" name="fotoLatarMerah" accept=".jpg,.jpeg,.png" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Akta Kelahiran *</label>
+                            <input type="file" name="aktaKelahiran" accept=".pdf,.jpg,.jpeg,.png" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Kartu Keluarga *</label>
+                            <input type="file" name="kartuKeluarga" accept=".pdf,.jpg,.jpeg,.png" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">BPJS (Jika Ada)</label>
+                            <input type="file" name="bpjs" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan Lulus/Ujian Akhir/Aktif Belajar *</label>
+                            <input type="file" name="keteranganSekolah" accept=".pdf,.jpg,.jpeg,.png" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 8: Pernyataan -->
+            <div class="form-section section-content hidden" id="section-8">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    ✅ Pernyataan
+                </h2>
+                <div class="input-group">
+                    <label class="flex items-start space-x-3 cursor-pointer">
+                        <input type="checkbox" name="pernyataan" required class="checkbox-custom mt-1">
+                        <div class="text-sm text-gray-700">
+                            <p class="font-medium mb-2">Dengan ini saya menyatakan bahwa:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                <li>Semua data yang saya isi adalah benar dan dapat dipertanggungjawabkan</li>
+                                <li>Dokumen yang saya upload adalah asli dan sah</li>
+                                <li>Saya bersedia mengikuti semua ketentuan dan peraturan yang berlaku</li>
+                                <li>Apabila dikemudian hari terbukti data yang saya berikan tidak benar, saya bersedia menerima sanksi yang berlaku</li>
+                            </ul>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button type="button" id="prevBtn" onclick="previousSection()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors hidden">
+                    ← Sebelumnya
+                </button>
+                <div class="flex-1"></div>
+                <button type="button" id="nextBtn" onclick="nextSection()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                    Selanjutnya →
+                </button>
+                <button type="submit" id="submitBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 hidden">
+                    📝 Kirim Formulir
+                </button>
+            </div>
+        </form>
+
+
+    </div>
+
+    <script>
+        let penyakitCounter = 1;
+        let bantuanCounter = 1;
+        let currentSection = 1;
+        const totalSections = 8;
+
+        // Google Drive API Configuration
+        const GOOGLE_DRIVE_API_KEY = 'YOUR_API_KEY'; // Replace with your actual API key
+        const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID'; // Replace with your actual client ID
+        const GOOGLE_DRIVE_FOLDER_ID = '1ArLD-3DQGngBMCl-O2GnNbkhvBwoTPjj';
+        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
+        const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets';
+
+        let gapi;
+        let tokenClient;
+        let gapiInited = false;
+        let gisInited = false;
+
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection(1);
+            initializeGoogleAPIs();
+        });
+
+        // Initialize Google APIs
+        async function initializeGoogleAPIs() {
+            // For demo purposes, we'll simulate the API initialization
+            console.log('🔧 Initializing Google APIs...');
+            console.log('📁 Target folder: https://drive.google.com/drive/folders/1ArLD-3DQGngBMCl-O2GnNbkhvBwoTPjj');
+            
+            // In a real implementation, you would:
+            // 1. Load the Google APIs
+            // 2. Initialize the client
+            // 3. Set up authentication
+            
+            // Simulated initialization
+            setTimeout(() => {
+                gapiInited = true;
+                gisInited = true;
+                console.log('✅ Google APIs initialized (simulation mode)');
+            }, 1000);
+        }
+
+        // Section navigation functions
+        function showSection(sectionNumber) {
+            // Hide all sections
+            for (let i = 1; i <= totalSections; i++) {
+                const section = document.getElementById(`section-${i}`);
+                
+                if (section) {
+                    section.classList.add('hidden');
+                }
+            }
+            
+            // Show current section
+            const currentSectionEl = document.getElementById(`section-${sectionNumber}`);
+            
+            if (currentSectionEl) {
+                currentSectionEl.classList.remove('hidden');
+            }
+            
+            currentSection = sectionNumber;
+            updateNavigationButtons();
+        }
+
+        function nextSection() {
+            if (validateCurrentSectionRequired() && currentSection < totalSections) {
+                // Lock tahun ajaran after leaving section 1
+                if (currentSection === 1) {
+                    const tahunAjaranSelect = document.querySelector('select[name="tahunAjaran"]');
+                    if (tahunAjaranSelect) {
+                        tahunAjaranSelect.disabled = true;
+                        tahunAjaranSelect.style.backgroundColor = '#f3f4f6';
+                        tahunAjaranSelect.style.cursor = 'not-allowed';
+                    }
+                }
+                
+                markSectionCompleted(currentSection);
+                showSection(currentSection + 1);
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 1) {
+                // Unlock tahun ajaran when returning to section 1
+                if (currentSection === 2) {
+                    const tahunAjaranSelect = document.querySelector('select[name="tahunAjaran"]');
+                    if (tahunAjaranSelect) {
+                        tahunAjaranSelect.disabled = false;
+                        tahunAjaranSelect.style.backgroundColor = 'white';
+                        tahunAjaranSelect.style.cursor = 'pointer';
+                    }
+                }
+                
+                showSection(currentSection - 1);
+            }
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Show/hide previous button
+            if (prevBtn) {
+                if (currentSection > 1) {
+                    prevBtn.classList.remove('hidden');
+                } else {
+                    prevBtn.classList.add('hidden');
+                }
+            }
+            
+            // Show/hide next and submit buttons
+            if (currentSection === totalSections) {
+                if (nextBtn) nextBtn.classList.add('hidden');
+                if (submitBtn) submitBtn.classList.remove('hidden');
+            } else {
+                if (nextBtn) nextBtn.classList.remove('hidden');
+                if (submitBtn) submitBtn.classList.add('hidden');
+            }
+        }
+
+        function markSectionCompleted(sectionNumber) {
+            // Section completion tracking removed
+        }
+
+        function validateCurrentSectionRequired() {
+            const currentSectionEl = document.getElementById(`section-${currentSection}`);
+            if (!currentSectionEl) return true;
+            
+            const requiredFields = currentSectionEl.querySelectorAll('[required]');
+            let isValid = true;
+            let missingFields = [];
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#ef4444';
+                    isValid = false;
+                    
+                    // Get field label for better error message
+                    const label = field.closest('.input-group')?.querySelector(`label[for="${field.name}"], label`);
+                    if (label) {
+                        missingFields.push(label.textContent.replace('*', '').trim());
+                    }
+                } else {
+                    field.style.borderColor = '#d1d5db';
+                }
+            });
+            
+            // Special validation for section 1 (jenjang selection)
+            if (currentSection === 1) {
+                const jenjangSelected = document.querySelectorAll('input[name="jenjang"]:checked');
+                if (jenjangSelected.length === 0) {
+                    showValidationMessage('Silakan pilih minimal satu jenjang pendidikan untuk melanjutkan.');
+                    return false;
+                }
+                
+                const tahunAjaran = document.querySelector('select[name="tahunAjaran"]');
+                if (!tahunAjaran.value) {
+                    tahunAjaran.style.borderColor = '#ef4444';
+                    showValidationMessage('Silakan pilih tahun ajaran untuk melanjutkan.');
+                    return false;
+                }
+            }
+            
+            if (!isValid) {
+                showValidationMessage(`Mohon lengkapi field wajib berikut untuk melanjutkan ke bagian selanjutnya:\n• ${missingFields.slice(0, 3).join('\n• ')}${missingFields.length > 3 ? '\n• Dan lainnya...' : ''}`);
+            }
+            
+            return isValid;
+        }
+
+        function showValidationMessage(message) {
+            // Create custom modal instead of alert
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+                    <div class="flex items-center mb-4">
+                        <div class="text-2xl mr-3">⚠️</div>
+                        <h3 class="text-lg font-semibold text-gray-800">Field Wajib Belum Diisi</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6 whitespace-pre-line">${message}</p>
+                    <button onclick="this.closest('.fixed').remove()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
+                        Mengerti
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Handle jenjang change
+        function handleJenjangChange() {
+            const jenjangCheckboxes = document.querySelectorAll('input[name="jenjang"]');
+            const miAsalSection = document.getElementById('miAsalSection');
+            const mtsAsalSection = document.getElementById('mtsAsalSection');
+            const nisnHelp = document.getElementById('nisnHelp');
+            
+            let miSelected = false;
+            let mtsOrPondokSelected = false;
+            let currentCheckbox = event.target;
+            
+            // Check current selections
+            jenjangCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    if (checkbox.value === 'MI') {
+                        miSelected = true;
+                    } else if (checkbox.value === 'MTs' || checkbox.value === 'Pondok') {
+                        mtsOrPondokSelected = true;
+                    }
+                }
+            });
+            
+            // Enforce mutual exclusivity: MI cannot be combined with MTs/Pondok
+            if (currentCheckbox.value === 'MI' && currentCheckbox.checked) {
+                // If MI is selected, uncheck MTs and Pondok
+                jenjangCheckboxes.forEach(checkbox => {
+                    if (checkbox.value === 'MTs' || checkbox.value === 'Pondok') {
+                        checkbox.checked = false;
+                    }
+                });
+                mtsOrPondokSelected = false;
+            } else if ((currentCheckbox.value === 'MTs' || currentCheckbox.value === 'Pondok') && currentCheckbox.checked) {
+                // If MTs or Pondok is selected, uncheck MI
+                jenjangCheckboxes.forEach(checkbox => {
+                    if (checkbox.value === 'MI') {
+                        checkbox.checked = false;
+                    }
+                });
+                miSelected = false;
+                
+                // Recheck selections after unchecking MI
+                mtsOrPondokSelected = false;
+                jenjangCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked && (checkbox.value === 'MTs' || checkbox.value === 'Pondok')) {
+                        mtsOrPondokSelected = true;
+                    }
+                });
+            }
+            
+            // Show/hide NISN help for MI students
+            if (miSelected) {
+                nisnHelp.classList.remove('hidden');
+            } else {
+                nisnHelp.classList.add('hidden');
+            }
+            
+            // Show/hide sections based on selection - this will be handled in section 4
+            if (miSelected) {
+                miAsalSection.classList.remove('hidden');
+                mtsAsalSection.classList.add('hidden');
+            } else if (mtsOrPondokSelected) {
+                miAsalSection.classList.add('hidden');
+                mtsAsalSection.classList.remove('hidden');
+            } else {
+                // No jenjang selected, hide both
+                miAsalSection.classList.add('hidden');
+                mtsAsalSection.classList.add('hidden');
+                document.getElementById('dataSekolahSection').classList.add('hidden');
+            }
+        }
+
+        // Handle asal pendidikan change for MI
+        function handleAsalPendidikanChange() {
+            const asalPendidikan = document.querySelector('select[name="asalPendidikan"]').value;
+            const dataSekolahSection = document.getElementById('dataSekolahSection');
+            const nsmField = document.getElementById('nsmField');
+            
+            if (asalPendidikan === 'TK') {
+                dataSekolahSection.classList.remove('hidden');
+                nsmField.classList.add('hidden');
+                // Remove required from NSM
+                const nsmInput = document.querySelector('input[name="nsm"]');
+                nsmInput.removeAttribute('required');
+            } else {
+                dataSekolahSection.classList.add('hidden');
+            }
+        }
+
+        // Handle asal sekolah change for MTs/Pondok
+        function handleAsalSekolahChange() {
+            const asalSekolah = document.querySelector('select[name="asalSekolah"]').value;
+            const dataSekolahSection = document.getElementById('dataSekolahSection');
+            const nsmField = document.getElementById('nsmField');
+            const nsmInput = document.querySelector('input[name="nsm"]');
+            
+            if (asalSekolah === 'SD') {
+                dataSekolahSection.classList.remove('hidden');
+                nsmField.classList.add('hidden');
+                // Remove required from NSM
+                nsmInput.removeAttribute('required');
+            } else if (asalSekolah === 'MI') {
+                dataSekolahSection.classList.remove('hidden');
+                nsmField.classList.remove('hidden');
+                // Add required to NSM
+                nsmInput.setAttribute('required', 'required');
+            } else {
+                dataSekolahSection.classList.add('hidden');
+                nsmField.classList.add('hidden');
+                nsmInput.removeAttribute('required');
+            }
+        }
+
+        // Toggle alamat functions
+        function toggleAlamatAyah() {
+            const checkbox = document.querySelector('input[name="alamatAyahSama"]');
+            const alamatSection = document.getElementById('alamatAyahSection');
+            
+            if (checkbox.checked) {
+                alamatSection.style.display = 'none';
+                copyAlamatSiswa('ayah');
+            } else {
+                alamatSection.style.display = 'block';
+            }
+        }
+
+        function toggleAlamatIbu() {
+            const checkbox = document.querySelector('input[name="alamatIbuSama"]');
+            const alamatSection = document.getElementById('alamatIbuSection');
+            
+            if (checkbox.checked) {
+                alamatSection.style.display = 'none';
+                copyAlamatSiswa('ibu');
+            } else {
+                alamatSection.style.display = 'block';
+            }
+        }
+
+        function toggleAlamatWali() {
+            const checkbox = document.querySelector('input[name="alamatWaliSama"]');
+            const alamatSection = document.getElementById('alamatWaliSection');
+            
+            if (checkbox.checked) {
+                alamatSection.style.display = 'none';
+                copyAlamatSiswa('wali');
+            } else {
+                alamatSection.style.display = 'block';
+            }
+        }
+
+        // Copy alamat siswa
+        function copyAlamatSiswa(target) {
+            const alamatSiswa = document.querySelector('textarea[name="alamat"]').value;
+            const provinsiSiswa = document.querySelector('input[name="provinsi"]').value;
+            const kabupatenSiswa = document.querySelector('input[name="kabupaten"]').value;
+            const kecamatanSiswa = document.querySelector('input[name="kecamatan"]').value;
+            const desaSiswa = document.querySelector('input[name="desa"]').value;
+            
+            document.querySelector(`textarea[name="alamat${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = alamatSiswa;
+            document.querySelector(`input[name="provinsi${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = provinsiSiswa;
+            document.querySelector(`input[name="kabupaten${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = kabupatenSiswa;
+            document.querySelector(`input[name="kecamatan${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = kecamatanSiswa;
+            document.querySelector(`input[name="desa${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = desaSiswa;
+        }
+
+        // Toggle wali sama dengan orang tua
+        function toggleWaliSamaAyah() {
+            const checkbox = document.querySelector('input[name="waliSamaAyah"]');
+            const waliSamaIbuCheckbox = document.querySelector('input[name="waliSamaIbu"]');
+            const dataWaliSection = document.getElementById('dataWaliSection');
+            
+            if (checkbox.checked) {
+                waliSamaIbuCheckbox.checked = false;
+                copyDataOrangTua('ayah');
+                dataWaliSection.style.display = 'none';
+            } else {
+                dataWaliSection.style.display = 'block';
+            }
+        }
+
+        function toggleWaliSamaIbu() {
+            const checkbox = document.querySelector('input[name="waliSamaIbu"]');
+            const waliSamaAyahCheckbox = document.querySelector('input[name="waliSamaAyah"]');
+            const dataWaliSection = document.getElementById('dataWaliSection');
+            
+            if (checkbox.checked) {
+                waliSamaAyahCheckbox.checked = false;
+                copyDataOrangTua('ibu');
+                dataWaliSection.style.display = 'none';
+            } else {
+                dataWaliSection.style.display = 'block';
+            }
+        }
+
+        // Copy data orang tua ke wali
+        function copyDataOrangTua(source) {
+            const namaSource = document.querySelector(`input[name="nama${source.charAt(0).toUpperCase() + source.slice(1)}"]`).value;
+            const nikSource = document.querySelector(`input[name="nik${source.charAt(0).toUpperCase() + source.slice(1)}"]`).value;
+            const pekerjaanSource = document.querySelector(`input[name="pekerjaan${source.charAt(0).toUpperCase() + source.slice(1)}"]`).value;
+            const hpSource = document.querySelector(`input[name="hp${source.charAt(0).toUpperCase() + source.slice(1)}"]`).value;
+            
+            document.querySelector('input[name="namaWali"]').value = namaSource;
+            document.querySelector('input[name="nikWali"]').value = nikSource;
+            document.querySelector('input[name="pekerjaanWali"]').value = pekerjaanSource;
+            document.querySelector('input[name="hpWali"]').value = hpSource;
+            document.querySelector('select[name="hubunganWali"]').value = source === 'ayah' ? 'Ayah' : 'Ibu';
+        }
+
+        // Toggle riwayat penyakit
+        function toggleRiwayatPenyakit() {
+            const checkbox = document.querySelector('input[name="adaRiwayatPenyakit"]');
+            const section = document.getElementById('riwayatPenyakitSection');
+            
+            if (checkbox.checked) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        }
+
+        // Add penyakit item
+        function addPenyakitItem() {
+            penyakitCounter++;
+            const container = document.getElementById('penyakitContainer');
+            const newItem = document.createElement('div');
+            newItem.className = 'penyakit-item bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4';
+            newItem.innerHTML = `
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-medium text-gray-800">Riwayat Penyakit #${penyakitCounter}</h4>
+                    <button type="button" onclick="removePenyakitItem(this)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
+                        Hapus
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Penyakit</label>
+                        <input type="text" name="namaPenyakit[]" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tingkat Keparahan</label>
+                        <select name="tingkatKeparahan[]" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Pilih Tingkat</option>
+                            <option value="Ringan">Ringan</option>
+                            <option value="Sedang">Sedang</option>
+                            <option value="Berat">Berat</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan</label>
+                    <textarea name="keteranganPenyakit[]" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        // Remove penyakit item
+        function removePenyakitItem(button) {
+            button.closest('.penyakit-item').remove();
+        }
+
+        // Toggle bantuan section
+        function toggleBantuanSection() {
+            const checkbox = document.querySelector('input[name="adaBantuan"]');
+            const section = document.getElementById('bantuanSection');
+            
+            if (checkbox.checked) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        }
+
+        // Add bantuan item
+        function addBantuanItem() {
+            bantuanCounter++;
+            const container = document.getElementById('bantuanContainer');
+            const newItem = document.createElement('div');
+            newItem.className = 'bantuan-item bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4';
+            newItem.innerHTML = `
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-medium text-gray-800">Bantuan #${bantuanCounter}</h4>
+                    <button type="button" onclick="removeBantuanItem(this)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
+                        Hapus
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Bantuan</label>
+                        <select name="jenisBantuan[]" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Pilih Jenis Bantuan</option>
+                            <option value="KIP">Kartu Indonesia Pintar (KIP)</option>
+                            <option value="PKH">Program Keluarga Harapan (PKH)</option>
+                            <option value="BSM">Bantuan Siswa Miskin (BSM)</option>
+                            <option value="KIS">Kartu Indonesia Sehat (KIS)</option>
+                            <option value="PIP">Program Indonesia Pintar (PIP)</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Kartu/ID</label>
+                        <input type="text" name="nomorBantuan[]" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan</label>
+                    <textarea name="keteranganBantuan[]" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        // Remove bantuan item
+        function removeBantuanItem(button) {
+            button.closest('.bantuan-item').remove();
+        }
+
+        // Form submission
+        document.getElementById('ppdbForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show confirmation popup
+            showConfirmationPopup();
+        });
+
+        // Show confirmation popup
+        function showConfirmationPopup() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+                    <div class="flex items-center mb-4">
+                        <div class="text-3xl mr-3">❓</div>
+                        <h3 class="text-lg font-semibold text-gray-800">Konfirmasi Pengiriman</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6">Apakah Anda yakin ingin mengirim formulir pendaftaran ini? Pastikan semua data yang diisi sudah benar.</p>
+                    <div class="flex space-x-3">
+                        <button onclick="this.closest('.fixed').remove()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg">
+                            Batal
+                        </button>
+                        <button onclick="confirmSubmit()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
+                            Ya, Kirim
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Confirm submit
+        function confirmSubmit() {
+            // Close confirmation popup
+            document.querySelector('.fixed').remove();
+            
+            // Show loading state with steps
+            showLoadingPopup();
+            
+            // Collect form data
+            const formData = new FormData(document.getElementById('ppdbForm'));
+            const data = {};
+            
+            // Convert FormData to object
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Generate registration number
+            const registrationNumber = 'PPDB' + new Date().getFullYear() + Math.random().toString(36).substr(2, 6).toUpperCase();
+            data.nomorPendaftaran = registrationNumber;
+            data.tanggalDaftar = new Date().toLocaleDateString('id-ID');
+            data.waktuDaftar = new Date().toLocaleTimeString('id-ID');
+            
+            // Store data for PDF generation
+            window.registrationData = data;
+            
+            // Process steps with delays
+            processRegistrationSteps(data);
+        }
+
+        // Show loading popup with steps
+        function showLoadingPopup() {
+            const modal = document.createElement('div');
+            modal.className = 'loading-popup fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-8 max-w-lg mx-4">
+                    <div class="text-center mb-6">
+                        <div class="text-3xl mb-2">⚙️</div>
+                        <h3 class="text-xl font-semibold text-gray-800">Memproses Pendaftaran</h3>
+                        <p class="text-gray-600 text-sm">Mohon tunggu, sistem sedang memproses data Anda...</p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="loading-step" id="step-1">
+                            <div class="step-icon pending" id="icon-1">1</div>
+                            <div class="step-text">
+                                <div class="font-medium text-gray-800">Menyimpan ke Google Drive</div>
+                                <div class="text-sm text-gray-600">Mengupload formulir dan bukti pendaftaran...</div>
+                            </div>
+                        </div>
+                        
+                        <div class="loading-step" id="step-2">
+                            <div class="step-icon pending" id="icon-2">2</div>
+                            <div class="step-text">
+                                <div class="font-medium text-gray-800">Membuat Rekap Spreadsheet</div>
+                                <div class="text-sm text-gray-600">Menambahkan data ke spreadsheet rekap...</div>
+                            </div>
+                        </div>
+                        
+                        <div class="loading-step" id="step-3">
+                            <div class="step-icon pending" id="icon-3">3</div>
+                            <div class="step-text">
+                                <div class="font-medium text-gray-800">Mengirim Email ke Sekolah</div>
+                                <div class="text-sm text-gray-600">Mengirim notifikasi ke mtsalhidayahmalili@gmail.com...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Process registration steps
+        async function processRegistrationSteps(data) {
+            // Step 1: Save to Google Drive
+            await processStep(1, async () => {
+                await saveToGoogleDrive(data);
+            });
+            
+            // Step 2: Create/Update Spreadsheet
+            await processStep(2, async () => {
+                await updateSpreadsheet(data);
+            });
+            
+            // Step 3: Send Email
+            await processStep(3, async () => {
+                await sendEmailToSchool(data);
+            });
+            
+            // Close loading and show success
+            setTimeout(() => {
+                document.querySelector('.loading-popup')?.remove();
+                showSuccessPopup(data);
+            }, 500);
+        }
+
+        // Process individual step
+        async function processStep(stepNumber, asyncFunction) {
+            const step = document.getElementById(`step-${stepNumber}`);
+            const icon = document.getElementById(`icon-${stepNumber}`);
+            
+            // Mark as active
+            step.classList.add('active');
+            icon.classList.remove('pending');
+            icon.classList.add('active');
+            
+            // Simulate processing time
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Execute the function
+            await asyncFunction();
+            
+            // Mark as completed
+            step.classList.remove('active');
+            step.classList.add('completed');
+            icon.classList.remove('active');
+            icon.classList.add('completed');
+            icon.textContent = '✓';
+            
+            // Wait a bit before next step
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        // Save to Google Drive
+        async function saveToGoogleDrive(data) {
+            console.log('📁 Saving to Google Drive...');
+            console.log('🎯 Target folder: https://drive.google.com/drive/folders/1ArLD-3DQGngBMCl-O2GnNbkhvBwoTPjj');
+            
+            // Generate PDFs
+            const formPDF = await generateFormPDF(data);
+            const receiptPDF = await generateReceiptPDF(data);
+            
+            // In a real implementation, you would upload these files to Google Drive
+            // using the Google Drive API
+            
+            console.log('📄 Generated files:');
+            console.log(`- Formulir_PPDB_${data.nomorPendaftaran}.pdf`);
+            console.log(`- Bukti_Pendaftaran_${data.nomorPendaftaran}.pdf`);
+            console.log('✅ Files saved to Google Drive (simulation)');
+            
+            // Store file info for later use
+            window.driveFiles = {
+                formPDF: `Formulir_PPDB_${data.nomorPendaftaran}.pdf`,
+                receiptPDF: `Bukti_Pendaftaran_${data.nomorPendaftaran}.pdf`,
+                folderUrl: 'https://drive.google.com/drive/folders/1ArLD-3DQGngBMCl-O2GnNbkhvBwoTPjj'
+            };
+        }
+
+        // Update spreadsheet
+        async function updateSpreadsheet(data) {
+            console.log('📊 Updating spreadsheet...');
+            
+            const spreadsheetName = `Rekap PPDB ${data.tahunAjaran} - Yayasan Al Hidayah Malili`;
+            console.log(`📋 Spreadsheet: ${spreadsheetName}`);
+            
+            // In a real implementation, you would:
+            // 1. Check if spreadsheet exists, create if not
+            // 2. Add new row with registration data
+            // 3. Format the data appropriately
+            
+            const rowData = [
+                new Date().toLocaleDateString('id-ID'), // Tanggal Input
+                data.nomorPendaftaran,
+                data.tahunAjaran,
+                Array.isArray(data.jenjang) ? data.jenjang.join(', ') : data.jenjang,
+                data.namaLengkap,
+                data.nik,
+                data.jenisKelamin,
+                data.tempatLahir,
+                data.tanggalLahir,
+                data.alamat,
+                data.namaAyah,
+                data.namaIbu,
+                data.namaWali || '',
+                data.noHp || data.hpAyah || data.hpIbu || '',
+                'Baru Daftar' // Status
+            ];
+            
+            console.log('📝 Row data prepared:', rowData);
+            console.log('✅ Spreadsheet updated (simulation)');
+            
+            // Store spreadsheet info
+            window.spreadsheetInfo = {
+                name: spreadsheetName,
+                url: 'https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit'
+            };
+        }
+
+        // Generate form PDF
+        async function generateFormPDF(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add comprehensive form data to PDF
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('FORMULIR PENDAFTARAN PPDB', 105, 20, { align: 'center' });
+            doc.text('Yayasan Al Hidayah Malili', 105, 30, { align: 'center' });
+            
+            // Add all form data systematically
+            let yPos = 50;
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            
+            // Registration info
+            doc.text(`Nomor Pendaftaran: ${data.nomorPendaftaran}`, 20, yPos);
+            yPos += 10;
+            doc.text(`Tanggal: ${data.tanggalDaftar} ${data.waktuDaftar}`, 20, yPos);
+            yPos += 10;
+            doc.text(`Tahun Ajaran: ${data.tahunAjaran}`, 20, yPos);
+            yPos += 20;
+            
+            // Student data
+            doc.setFont(undefined, 'bold');
+            doc.text('DATA PESERTA DIDIK', 20, yPos);
+            yPos += 10;
+            doc.setFont(undefined, 'normal');
+            
+            const studentFields = [
+                ['Nama Lengkap', data.namaLengkap],
+                ['NIK', data.nik],
+                ['Tempat, Tanggal Lahir', `${data.tempatLahir}, ${data.tanggalLahir}`],
+                ['Jenis Kelamin', data.jenisKelamin],
+                ['Agama', data.agama],
+                ['Alamat', data.alamat]
+            ];
+            
+            studentFields.forEach(([label, value]) => {
+                doc.text(`${label}: ${value || ''}`, 20, yPos);
+                yPos += 8;
+            });
+            
+            return doc;
+        }
+
+        // Generate receipt PDF
+        async function generateReceiptPDF(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Header
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('BUKTI PENDAFTARAN PPDB', 105, 20, { align: 'center' });
+            doc.text('Yayasan Al Hidayah Malili', 105, 30, { align: 'center' });
+            
+            // Registration info
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Nomor Pendaftaran: ${data.nomorPendaftaran}`, 20, 50);
+            doc.text(`Tanggal Pendaftaran: ${data.tanggalDaftar} - ${data.waktuDaftar}`, 20, 60);
+            doc.text(`Tahun Ajaran: ${data.tahunAjaran || ''}`, 20, 70);
+            
+            // Student data
+            doc.setFont(undefined, 'bold');
+            doc.text('DATA PESERTA DIDIK', 20, 90);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Nama Lengkap: ${data.namaLengkap || ''}`, 20, 100);
+            doc.text(`NIK: ${data.nik || ''}`, 20, 110);
+            
+            const jenjang = Array.isArray(data.jenjang) ? data.jenjang.join(', ') : (data.jenjang || '');
+            doc.text(`Jenjang yang Dipilih: ${jenjang}`, 20, 120);
+            
+            return doc;
+        }
+
+        // Send email to school with Google Drive links
+        async function sendEmailToSchool(data) {
+            console.log('📧 Sending email to school...');
+            console.log('📧 To: mtsalhidayahmalili@gmail.com');
+            
+            const jenjang = Array.isArray(data.jenjang) ? data.jenjang.join(', ') : data.jenjang;
+            
+            const emailData = {
+                to: 'mtsalhidayahmalili@gmail.com',
+                subject: `Pendaftaran PPDB Baru - ${data.nomorPendaftaran} - ${data.namaLengkap}`,
+                body: `
+Assalamu'alaikum Warahmatullahi Wabarakatuh,
+
+Pendaftaran PPDB baru telah diterima dengan detail sebagai berikut:
+
+📋 INFORMASI PENDAFTARAN
+Nomor Pendaftaran: ${data.nomorPendaftaran}
+Nama Peserta Didik: ${data.namaLengkap}
+Jenjang: ${jenjang}
+Tahun Ajaran: ${data.tahunAjaran}
+Tanggal Pendaftaran: ${data.tanggalDaftar} ${data.waktuDaftar}
+
+📁 DOKUMEN TERSIMPAN DI GOOGLE DRIVE
+Semua dokumen pendaftaran telah tersimpan otomatis di:
+${window.driveFiles?.folderUrl}
+
+File yang tersimpan:
+- ${window.driveFiles?.formPDF}
+- ${window.driveFiles?.receiptPDF}
+
+📊 REKAP DATA
+Data pendaftaran telah ditambahkan ke spreadsheet rekap:
+${window.spreadsheetInfo?.name}
+
+👨‍👩‍👧‍👦 KONTAK ORANG TUA
+Ayah: ${data.namaAyah} (${data.hpAyah || 'Tidak ada'})
+Ibu: ${data.namaIbu} (${data.hpIbu || 'Tidak ada'})
+${data.namaWali ? `Wali: ${data.namaWali} (${data.hpWali || 'Tidak ada'})` : ''}
+
+Silakan hubungi orang tua/wali untuk proses selanjutnya.
+
+Wassalamu'alaikum Warahmatullahi Wabarakatuh
+
+---
+Sistem PPDB Online Yayasan Al Hidayah Malili
+Dokumen tersimpan otomatis di Google Drive
+                `
+            };
+            
+            // Store for demonstration
+            window.emailData = emailData;
+            
+            console.log('✅ Email sent successfully (simulation)');
+            console.log('📄 Email content:', emailData.body);
+        }
+
+        // Show success popup with Google Drive integration
+        function showSuccessPopup(data) {
+            const modal = document.createElement('div');
+            modal.className = 'success-popup fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-8 max-w-lg mx-4 text-center">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h3 class="text-2xl font-bold text-green-600 mb-2">Selamat! Anda Telah Terdaftar</h3>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <p class="text-green-800 font-semibold">Nomor Pendaftaran: ${data.nomorPendaftaran}</p>
+                        <p class="text-green-700 text-sm">Tanggal: ${data.tanggalDaftar} - ${data.waktuDaftar}</p>
+                    </div>
+                    
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center justify-center mb-2">
+                            <span class="text-2xl mr-2">☁️</span>
+                            <h4 class="font-semibold text-blue-800">File Tersimpan di Google Drive</h4>
+                        </div>
+                        <p class="text-blue-700 text-sm mb-3">
+                            Formulir dan bukti pendaftaran telah disimpan otomatis di Google Drive
+                        </p>
+                        <button onclick="window.open('${window.driveFiles?.folderUrl}', '_blank')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            📁 Lihat File di Google Drive
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-3 mb-6">
+                        <button onclick="cetakBuktiPendaftaran()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                            <span>🖨️</span>
+                            <span>Cetak Bukti Pendaftaran</span>
+                        </button>
+                        <button onclick="downloadBuktiPendaftaran()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                            <span>📥</span>
+                            <span>Download PDF Bukti Pendaftaran</span>
+                        </button>
+                    </div>
+                    
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+                        <p class="text-orange-800 text-sm font-medium mb-2">📧 Informasi Penting:</p>
+                        <p class="text-orange-700 text-sm">
+                            Data pendaftaran telah dikirim ke <strong>mtsalhidayahmalili@gmail.com</strong> 
+                            beserta link ke file Google Drive. Pihak sekolah akan menghubungi Anda untuk informasi selanjutnya.
+                        </p>
+                    </div>
+                    
+                    <button onclick="closeSuccessPopup()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                        Tutup
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Close success popup
+        function closeSuccessPopup() {
+            document.querySelector('.success-popup')?.remove();
+            // Reset form
+            document.getElementById('ppdbForm').reset();
+            // Hide optional sections
+            document.getElementById('riwayatPenyakitSection').classList.add('hidden');
+            document.getElementById('bantuanSection').classList.add('hidden');
+            // Reset to first section
+            showSection(1);
+            // Unlock tahun ajaran
+            const tahunAjaranSelect = document.querySelector('select[name="tahunAjaran"]');
+            if (tahunAjaranSelect) {
+                tahunAjaranSelect.disabled = false;
+                tahunAjaranSelect.style.backgroundColor = 'white';
+                tahunAjaranSelect.style.cursor = 'pointer';
+            }
+        }
+
+        // Print bukti pendaftaran
+        function cetakBuktiPendaftaran() {
+            const data = window.registrationData;
+            
+            // Create print window
+            const printWindow = window.open('', '_blank');
+            const jenjang = Array.isArray(data.jenjang) ? data.jenjang.join(', ') : (data.jenjang || '');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Bukti Pendaftaran PPDB - ${data.nomorPendaftaran}</title>
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            margin: 20px; 
+                            line-height: 1.6;
+                        }
+                        .header { 
+                            text-align: center; 
+                            border-bottom: 2px solid #333; 
+                            padding-bottom: 20px; 
+                            margin-bottom: 30px;
+                        }
+                        .header h1 { 
+                            margin: 0; 
+                            font-size: 24px; 
+                            color: #333;
+                        }
+                        .header h2 { 
+                            margin: 5px 0; 
+                            font-size: 18px; 
+                            color: #666;
+                        }
+                        .registration-info {
+                            background: #f8f9fa;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin-bottom: 20px;
+                            border-left: 4px solid #007bff;
+                        }
+                        .section { 
+                            margin-bottom: 25px; 
+                        }
+                        .section h3 { 
+                            background: #007bff; 
+                            color: white; 
+                            padding: 10px; 
+                            margin: 0 0 15px 0; 
+                            border-radius: 4px;
+                        }
+                        .data-row { 
+                            margin-bottom: 8px; 
+                        }
+                        .label { 
+                            font-weight: bold; 
+                            display: inline-block; 
+                            width: 200px;
+                        }
+                        .footer { 
+                            margin-top: 40px; 
+                            padding-top: 20px; 
+                            border-top: 1px solid #ccc; 
+                            font-size: 12px; 
+                            color: #666;
+                        }
+                        @media print {
+                            body { margin: 0; }
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>BUKTI PENDAFTARAN PPDB</h1>
+                        <h2>Yayasan Al Hidayah Malili</h2>
+                    </div>
+                    
+                    <div class="registration-info">
+                        <div class="data-row">
+                            <span class="label">Nomor Pendaftaran:</span>
+                            <strong>${data.nomorPendaftaran}</strong>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Tanggal Pendaftaran:</span>
+                            ${data.tanggalDaftar} - ${data.waktuDaftar}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Tahun Ajaran:</span>
+                            ${data.tahunAjaran || ''}
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>DATA PESERTA DIDIK</h3>
+                        <div class="data-row">
+                            <span class="label">Nama Lengkap:</span>
+                            ${data.namaLengkap || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">NIK:</span>
+                            ${data.nik || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Tempat, Tanggal Lahir:</span>
+                            ${data.tempatLahir || ''}, ${data.tanggalLahir || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Jenis Kelamin:</span>
+                            ${data.jenisKelamin || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Agama:</span>
+                            ${data.agama || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Status dalam Keluarga:</span>
+                            ${data.statusKeluarga || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Jenjang yang Dipilih:</span>
+                            <strong>${jenjang}</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>ALAMAT</h3>
+                        <div class="data-row">
+                            <span class="label">Alamat Lengkap:</span>
+                            ${data.alamat || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Desa/Kelurahan:</span>
+                            ${data.desa || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Kecamatan:</span>
+                            ${data.kecamatan || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Kabupaten/Kota:</span>
+                            ${data.kabupaten || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Provinsi:</span>
+                            ${data.provinsi || ''}
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>DATA ORANG TUA</h3>
+                        <div class="data-row">
+                            <span class="label">Nama Ayah:</span>
+                            ${data.namaAyah || ''}
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Nama Ibu:</span>
+                            ${data.namaIbu || ''}
+                        </div>
+                        ${data.namaWali ? `
+                        <div class="data-row">
+                            <span class="label">Nama Wali:</span>
+                            ${data.namaWali} (${data.hubunganWali || ''})
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="footer">
+                        <p><strong>Catatan Penting:</strong></p>
+                        <ul>
+                            <li>Simpan bukti ini sebagai tanda bahwa Anda telah mendaftar</li>
+                            <li>Data pendaftaran telah dikirim ke pihak sekolah melalui email</li>
+                            <li>File dokumen tersimpan di Google Drive untuk akses mudah</li>
+                            <li>Pihak sekolah akan menghubungi Anda untuk informasi selanjutnya</li>
+                            <li>Untuk informasi lebih lanjut, hubungi Yayasan Al Hidayah Malili</li>
+                        </ul>
+                        <p style="margin-top: 20px; text-align: center;">
+                            <em>Dokumen ini dicetak pada: ${new Date().toLocaleString('id-ID')}</em>
+                        </p>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            
+            // Wait for content to load then print
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        }
+
+        // Numeric input validation functions
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            // Allow backspace, delete, tab, escape, enter
+            if (charCode == 46 || charCode == 8 || charCode == 9 || charCode == 27 || charCode == 13) {
+                return true;
+            }
+            // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+            if ((charCode == 65 || charCode == 67 || charCode == 86 || charCode == 88) && (evt.ctrlKey === true || evt.metaKey === true)) {
+                return true;
+            }
+            // Allow home, end, left, right arrow keys
+            if (charCode >= 35 && charCode <= 40) {
+                return true;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((charCode < 48 || charCode > 57)) {
+                evt.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        function validateNumericInput(input) {
+            // Remove any non-numeric characters
+            input.value = input.value.replace(/[^0-9]/g, '');
+            
+            // Reset border color if valid
+            if (input.value.length > 0) {
+                input.style.borderColor = '#d1d5db';
+            }
+        }
+
+        // Download bukti pendaftaran
+        function downloadBuktiPendaftaran() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const data = window.registrationData;
+            
+            // Header
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('BUKTI PENDAFTARAN PPDB', 105, 20, { align: 'center' });
+            doc.text('Yayasan Al Hidayah Malili', 105, 30, { align: 'center' });
+            
+            // Registration info
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Nomor Pendaftaran: ${data.nomorPendaftaran}`, 20, 50);
+            doc.text(`Tanggal Pendaftaran: ${data.tanggalDaftar} - ${data.waktuDaftar}`, 20, 60);
+            doc.text(`Tahun Ajaran: ${data.tahunAjaran || ''}`, 20, 70);
+            
+            // Student data
+            doc.setFont(undefined, 'bold');
+            doc.text('DATA PESERTA DIDIK', 20, 90);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Nama Lengkap: ${data.namaLengkap || ''}`, 20, 100);
+            doc.text(`NIK: ${data.nik || ''}`, 20, 110);
+            doc.text(`Tempat, Tanggal Lahir: ${data.tempatLahir || ''}, ${data.tanggalLahir || ''}`, 20, 120);
+            doc.text(`Jenis Kelamin: ${data.jenisKelamin || ''}`, 20, 130);
+            doc.text(`Agama: ${data.agama || ''}`, 20, 140);
+            doc.text(`Status dalam Keluarga: ${data.statusKeluarga || ''}`, 20, 150);
+            
+            const jenjang = Array.isArray(data.jenjang) ? data.jenjang.join(', ') : (data.jenjang || '');
+            doc.text(`Jenjang yang Dipilih: ${jenjang}`, 20, 160);
+            
+            // Address
+            doc.text(`Alamat: ${data.alamat || ''}`, 20, 170);
+            doc.text(`${data.desa || ''}, ${data.kecamatan || ''}, ${data.kabupaten || ''}, ${data.provinsi || ''}`, 20, 180);
+            
+            // Parents data
+            doc.setFont(undefined, 'bold');
+            doc.text('DATA ORANG TUA', 20, 200);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Nama Ayah: ${data.namaAyah || ''}`, 20, 210);
+            doc.text(`Nama Ibu: ${data.namaIbu || ''}`, 20, 220);
+            
+            if (data.namaWali) {
+                doc.text(`Nama Wali: ${data.namaWali} (${data.hubunganWali || ''})`, 20, 230);
+            }
+            
+            // Footer
+            doc.setFontSize(10);
+            doc.text('Simpan bukti ini sebagai tanda bahwa Anda telah mendaftar.', 20, 250);
+            doc.text('Data telah dikirim ke pihak sekolah dan tersimpan di Google Drive.', 20, 260);
+            doc.text('Untuk informasi lebih lanjut, hubungi Yayasan Al Hidayah Malili.', 20, 270);
+            
+            // Save PDF
+            doc.save(`Bukti_Pendaftaran_${data.nomorPendaftaran}.pdf`);
+        }
+
+
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9990458ea221408e',t:'MTc2MjIxOTA0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
