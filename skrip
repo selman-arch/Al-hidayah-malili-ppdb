@@ -168,21 +168,21 @@
                     <p class="text-sm text-gray-600 mb-4">Pilih jenjang yang diinginkan (MI tidak bisa dikombinasi dengan jenjang lain, MTs dan Pondok bisa dipilih bersamaan)</p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <label class="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer transition-colors">
-                            <input type="checkbox" name="jenjang" value="MI" class="checkbox-custom" onchange="handleJenjangChange()">
+                            <input type="checkbox" name="jenjang" value="MI" class="checkbox-custom" onchange="handleJenjangChange(event)">
                             <div>
                                 <div class="font-semibold text-gray-800">MI</div>
                                 <div class="text-sm text-gray-600">Madrasah Ibtidaiyah</div>
                             </div>
                         </label>
                         <label class="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer transition-colors">
-                            <input type="checkbox" name="jenjang" value="MTs" class="checkbox-custom" onchange="handleJenjangChange()">
+                            <input type="checkbox" name="jenjang" value="MTs" class="checkbox-custom" onchange="handleJenjangChange(event)">
                             <div>
                                 <div class="font-semibold text-gray-800">MTs</div>
                                 <div class="text-sm text-gray-600">Madrasah Tsanawiyah</div>
                             </div>
                         </label>
                         <label class="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-400 cursor-pointer transition-colors">
-                            <input type="checkbox" name="jenjang" value="Pondok" class="checkbox-custom" onchange="handleJenjangChange()">
+                            <input type="checkbox" name="jenjang" value="Pondok" class="checkbox-custom" onchange="handleJenjangChange(event)">
                             <div>
                                 <div class="font-semibold text-gray-800">Pondok</div>
                                 <div class="text-sm text-gray-600">Pondok Pesantren</div>
@@ -838,7 +838,9 @@
         const totalSections = 8;
 
         // Google Drive API Configuration
-        const GOOGLE_DRIVE_API_KEY = 'YOUR_API_KEY'; // Replace with your actual API key
+        // IMPORTANT: Replace 'YOUR_API_KEY' with your actual Google Drive API key before deploying to production.
+        // IMPORTANT: Replace 'YOUR_CLIENT_ID' with your actual Google OAuth Client ID before deploying this application.
+        const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID'; // Replace with your actual client ID
         const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID'; // Replace with your actual client ID
         const GOOGLE_DRIVE_FOLDER_ID = '1ArLD-3DQGngBMCl-O2GnNbkhvBwoTPjj';
         const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
@@ -1022,8 +1024,7 @@
             document.body.appendChild(modal);
         }
 
-        // Handle jenjang change
-        function handleJenjangChange() {
+        function handleJenjangChange(event) {
             const jenjangCheckboxes = document.querySelectorAll('input[name="jenjang"]');
             const miAsalSection = document.getElementById('miAsalSection');
             const mtsAsalSection = document.getElementById('mtsAsalSection');
@@ -1031,6 +1032,7 @@
             
             let miSelected = false;
             let mtsOrPondokSelected = false;
+            let currentCheckbox = event.target;
             let currentCheckbox = event.target;
             
             // Check current selections
@@ -1173,17 +1175,28 @@
 
         // Copy alamat siswa
         function copyAlamatSiswa(target) {
-            const alamatSiswa = document.querySelector('textarea[name="alamat"]').value;
-            const provinsiSiswa = document.querySelector('input[name="provinsi"]').value;
-            const kabupatenSiswa = document.querySelector('input[name="kabupaten"]').value;
-            const kecamatanSiswa = document.querySelector('input[name="kecamatan"]').value;
-            const desaSiswa = document.querySelector('input[name="desa"]').value;
-            
-            document.querySelector(`textarea[name="alamat${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = alamatSiswa;
-            document.querySelector(`input[name="provinsi${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = provinsiSiswa;
-            document.querySelector(`input[name="kabupaten${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = kabupatenSiswa;
-            document.querySelector(`input[name="kecamatan${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = kecamatanSiswa;
-            document.querySelector(`input[name="desa${target.charAt(0).toUpperCase() + target.slice(1)}"]`).value = desaSiswa;
+            const alamatSiswa = document.querySelector('textarea[name="alamat"]')?.value || '';
+            const provinsiSiswa = document.querySelector('input[name="provinsi"]')?.value || '';
+            const kabupatenSiswa = document.querySelector('input[name="kabupaten"]')?.value || '';
+            const kecamatanSiswa = document.querySelector('input[name="kecamatan"]')?.value || '';
+            const desaSiswa = document.querySelector('input[name="desa"]')?.value || '';
+
+            const targetPrefix = target.charAt(0).toUpperCase() + target.slice(1);
+
+            const alamatTarget = document.querySelector(`textarea[name="alamat${targetPrefix}"]`);
+            if (alamatTarget) alamatTarget.value = alamatSiswa;
+
+            const provinsiTarget = document.querySelector(`input[name="provinsi${targetPrefix}"]`);
+            if (provinsiTarget) provinsiTarget.value = provinsiSiswa;
+
+            const kabupatenTarget = document.querySelector(`input[name="kabupaten${targetPrefix}"]`);
+            if (kabupatenTarget) kabupatenTarget.value = kabupatenSiswa;
+
+            const kecamatanTarget = document.querySelector(`input[name="kecamatan${targetPrefix}"]`);
+            if (kecamatanTarget) kecamatanTarget.value = kecamatanSiswa;
+
+            const desaTarget = document.querySelector(`input[name="desa${targetPrefix}"]`);
+            if (desaTarget) desaTarget.value = desaSiswa;
         }
 
         // Toggle wali sama dengan orang tua
@@ -1204,19 +1217,25 @@
         function toggleWaliSamaIbu() {
             const checkbox = document.querySelector('input[name="waliSamaIbu"]');
             const waliSamaAyahCheckbox = document.querySelector('input[name="waliSamaAyah"]');
-            const dataWaliSection = document.getElementById('dataWaliSection');
-            
-            if (checkbox.checked) {
-                waliSamaAyahCheckbox.checked = false;
-                copyDataOrangTua('ibu');
-                dataWaliSection.style.display = 'none';
-            } else {
-                dataWaliSection.style.display = 'block';
-            }
-        }
-
         // Copy data orang tua ke wali
         function copyDataOrangTua(source) {
+            const namaSourceEl = document.querySelector(`input[name="nama${source.charAt(0).toUpperCase() + source.slice(1)}"]`);
+            const nikSourceEl = document.querySelector(`input[name="nik${source.charAt(0).toUpperCase() + source.slice(1)}"]`);
+            const pekerjaanSourceEl = document.querySelector(`input[name="pekerjaan${source.charAt(0).toUpperCase() + source.slice(1)}"]`);
+            const hpSourceEl = document.querySelector(`input[name="hp${source.charAt(0).toUpperCase() + source.slice(1)}"]`);
+
+            const namaWaliEl = document.querySelector('input[name="namaWali"]');
+            const nikWaliEl = document.querySelector('input[name="nikWali"]');
+            const pekerjaanWaliEl = document.querySelector('input[name="pekerjaanWali"]');
+            const hpWaliEl = document.querySelector('input[name="hpWali"]');
+            const hubunganWaliEl = document.querySelector('select[name="hubunganWali"]');
+
+            if (namaWaliEl && namaSourceEl) namaWaliEl.value = namaSourceEl.value;
+            if (nikWaliEl && nikSourceEl) nikWaliEl.value = nikSourceEl.value;
+            if (pekerjaanWaliEl && pekerjaanSourceEl) pekerjaanWaliEl.value = pekerjaanSourceEl.value;
+            if (hpWaliEl && hpSourceEl) hpWaliEl.value = hpSourceEl.value;
+            if (hubunganWaliEl) hubunganWaliEl.value = source === 'ayah' ? 'Ayah' : 'Ibu';
+        }
             const namaSource = document.querySelector(`input[name="nama${source.charAt(0).toUpperCase() + source.slice(1)}"]`).value;
             const nikSource = document.querySelector(`input[name="nik${source.charAt(0).toUpperCase() + source.slice(1)}"]`).value;
             const pekerjaanSource = document.querySelector(`input[name="pekerjaan${source.charAt(0).toUpperCase() + source.slice(1)}"]`).value;
@@ -1336,13 +1355,18 @@
             `;
             container.appendChild(newItem);
         }
-
-        // Remove bantuan item
-        function removeBantuanItem(button) {
-            button.closest('.bantuan-item').remove();
-        }
-
         // Form submission
+        document.getElementById('ppdbForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Re-validate required fields before showing confirmation popup
+            if (!validateCurrentSectionRequired()) {
+                return;
+            }
+            
+            // Show confirmation popup
+            showConfirmationPopup();
+        });
         document.getElementById('ppdbForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -1966,27 +1990,57 @@ Dokumen tersimpan otomatis di Google Drive
             // Wait for content to load then print
             setTimeout(() => {
                 printWindow.print();
-                printWindow.close();
-            }, 500);
-        }
-
-        // Numeric input validation functions
         function isNumberKey(evt) {
             var charCode = (evt.which) ? evt.which : evt.keyCode;
+            // Key code constants for readability
+            const KEY_BACKSPACE = 8;
+            const KEY_TAB = 9;
+            const KEY_ENTER = 13;
+            const KEY_ESCAPE = 27;
+            const KEY_DELETE = 46;
+            const KEY_A = 65;
+            const KEY_C = 67;
+            const KEY_V = 86;
+            const KEY_X = 88;
+            const KEY_HOME = 36;
+            const KEY_END = 35;
+            const KEY_LEFT = 37;
+            const KEY_UP = 38;
+            const KEY_RIGHT = 39;
+            const KEY_DOWN = 40;
+            const KEY_0 = 48;
+            const KEY_9 = 57;
+
             // Allow backspace, delete, tab, escape, enter
-            if (charCode == 46 || charCode == 8 || charCode == 9 || charCode == 27 || charCode == 13) {
+            if (
+                charCode === KEY_DELETE ||
+                charCode === KEY_BACKSPACE ||
+                charCode === KEY_TAB ||
+                charCode === KEY_ESCAPE ||
+                charCode === KEY_ENTER
+            ) {
                 return true;
             }
             // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-            if ((charCode == 65 || charCode == 67 || charCode == 86 || charCode == 88) && (evt.ctrlKey === true || evt.metaKey === true)) {
+            if (
+                (charCode === KEY_A || charCode === KEY_C || charCode === KEY_V || charCode === KEY_X) &&
+                (evt.ctrlKey === true || evt.metaKey === true)
+            ) {
                 return true;
             }
             // Allow home, end, left, right arrow keys
-            if (charCode >= 35 && charCode <= 40) {
+            if (
+                (charCode >= KEY_END && charCode <= KEY_DOWN)
+            ) {
                 return true;
             }
             // Ensure that it is a number and stop the keypress
-            if ((charCode < 48 || charCode > 57)) {
+            if (charCode < KEY_0 || charCode > KEY_9) {
+                evt.preventDefault();
+                return false;
+            }
+            return true;
+        }
                 evt.preventDefault();
                 return false;
             }
@@ -2034,8 +2088,8 @@ Dokumen tersimpan otomatis di Google Drive
             doc.text(`Agama: ${data.agama || ''}`, 20, 140);
             doc.text(`Status dalam Keluarga: ${data.statusKeluarga || ''}`, 20, 150);
             
-            const jenjang = Array.isArray(data.jenjang) ? data.jenjang.join(', ') : (data.jenjang || '');
-            doc.text(`Jenjang yang Dipilih: ${jenjang}`, 20, 160);
+</body>
+</html>
             
             // Address
             doc.text(`Alamat: ${data.alamat || ''}`, 20, 170);
